@@ -1,0 +1,85 @@
+.result {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  background-color: #f5f6f7;
+}
+
+.result__title {
+  font-family: "Roboto Slab";
+  font-weight: 400;
+  font-size: 40px;
+  color: black;
+  height: 46px;
+  padding-top: 80px;
+  padding-left: 104px;
+}
+
+.result__button {
+  font-family: "Roboto";
+  font-weight: 500;
+  font-size: 18px;
+  height: 64px;
+  width: 288px;
+  margin: 0 auto;
+  background-color: #e8e8e8;
+  color: black;
+  border-style: none;
+  border-radius: 100px;
+  margin-bottom: 80px;
+}
+
+@media screen and (max-width: 768px) and (min-width: 320px) {
+  .result {
+    width: 100vw;
+    height: 100%;
+    background-color: #f5f6f7;
+    margin-bottom: 24px;
+  }
+
+  .result__title {
+    font-size: 30px;
+    width: 288px;
+    height: 88px;
+    padding-top: 32px;
+    padding-left: 0;
+    padding-bottom: 24px;
+    margin: 0 auto;
+  }
+
+  .result__button {
+    height: 56px;
+    width: 288px;
+  }
+}
+
+@media only screen and (max-width: 1440px) and (min-width: 769px) {
+  .result {
+    width: 100vw;
+  }
+
+  .result__title {
+    padding-top: 40px;
+    padding-left: 40px;
+  }
+
+  .result__button {
+    height: 56px;
+    width: 240px;
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .result {
+    width: 100%;
+  }
+
+  .result__title {
+    width: 288px;
+    font-size: 30px;
+    padding-top: 32px;
+    padding-left: 0;
+    margin: 0 auto;
+  }
+}
