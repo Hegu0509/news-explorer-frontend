@@ -1,7 +1,7 @@
 .result {
   display: flex;
   flex-direction: column;
-  height: 974px;
+  width: 100vw;
   background-color: #f5f6f7;
 }
 
@@ -26,14 +26,15 @@
   color: black;
   border-style: none;
   border-radius: 100px;
+  margin-bottom: 80px;
 }
 
 @media screen and (max-width: 768px) and (min-width: 320px) {
   .result {
-    width: 320px;
+    width: 100vw;
     height: 100%;
     background-color: #f5f6f7;
-    padding-bottom: 24px;
+    margin-bottom: 24px;
   }
 
   .result__title {
@@ -49,5 +50,36 @@
   .result__button {
     height: 56px;
     width: 288px;
+  }
+}
+
+@media only screen and (max-width: 1440px) and (min-width: 769px) {
+  .result {
+    width: 100vw;
+  }
+
+  .result__title {
+    padding-top: 40px;
+    padding-left: 40px;
+  }
+
+  .result__button {
+    height: 56px;
+    width: 240px;
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .result {
+    width: 100%;
+  }
+
+  .result__title {
+    width: 288px;
+    font-size: 30px;
+    padding-top: 32px;
+    padding-left: 0;
+    margin: 0 auto;
   }
 }

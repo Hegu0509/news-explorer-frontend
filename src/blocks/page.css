@@ -1,7 +1,7 @@
 .page {
   display: flex;
   flex-direction: column;
-  margin: 0;
+  margin: 0 auto;
   font-family: "Inter", "Roboto", "Roboto Slab", "Source Sans Pro", Arial,
     sans-serif;
   background-color: white;

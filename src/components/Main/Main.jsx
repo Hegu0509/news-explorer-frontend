@@ -1,75 +1,34 @@
-import React from "react";
-import NewCard from "../NewCard/NewCard";
-import Popup from "./components/Popup/Popup";
-import EditProfile from "../EditProfile/EditProfile";
-import EditAvatar from "../EditAvatar/EditAvatar";
-import Card from "./components/Card/Card";
-import pen from "../../images/icons/pen.png";
-import editButton from "../../images/icons/edit.svg";
-import aboutPhoto from "../../images/about-photo.jpg";
+import Preloader from "../Preloader/Preloader";
+import NotFound from "../NotFound/NotFound";
+import { useContext } from "react";
+import NewsCardList from "../NewsCardList/NewsCardList";
 
-import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
+import { HasSearchedContext } from "../../contexts/HasSearchedContext";
+import { SearchResultContext } from "../../contexts/SearchResultContext";
 
 export default function Main(props) {
-  let { currentUser } = React.useContext(CurrentUserContext);
-  const { popup } = React.useContext(CurrentUserContext);
-  const { cards } = React.useContext(CurrentUserContext);
-  const { handleCardLike } = React.useContext(CurrentUserContext);
-  const { handleCardDelete } = React.useContext(CurrentUserContext);
-  const { handleAddPlaceSubmit } = React.useContext(CurrentUserContext);
-
-  const newCardPopup = {
-    title: "Nuevo lugar",
-    children: <NewCard onAddPlaceSubmit={handleAddPlaceSubmit} />,
-  };
-
-  const editProfilePopup = {
-    title: "Editar Perfil",
-    children: <EditProfile />,
-  };
-
-  const editAvatarPopup = {
-    title: "Cambiar foto de perfil",
-    children: <EditAvatar />,
-  };
+  const { hasSearched } = useContext(HasSearchedContext);
+  const { searchResult } = useContext(SearchResultContext);
 
   return (
     <main className="content">
-      {popup && (
-        <Popup onClose={props.onClosePopup} title={popup.title}>
-          {popup.children}
-        </Popup>
-      )}
-      <section className="result">
-        <p className="result__title">Resultados de la búsqueda</p>
-        <ul className="news-grid">
-          {cards.map((card) => (
-            <Card
-              onClick={props.onOpenPopup}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-              key={card._id}
-              card={card}
-            />
-          ))}
-        </ul>
-        <button className="result__button">Ver más</button>
-      </section>
-
-      <section className="about">
-        <img src={aboutPhoto} alt="Photo about" className="about__photo" />
-        <div className="about__wrapper">
-          <p className="about__title">Acerca del autor</p>
-          <p className="about__text">
-            Este bloque describe al autor del proyecto. Aquí debe indicar tu
-            nombre, a qué te dedicas y qué tecnologías de desarrollo conoces.
-            <br></br>
-            <br></br>
-            También puedes hablar de tu experiencia con Practicum, de lo que
-            aprendiste allí y de cómo puedes ayudar a los clientes potenciales.
+      {/* <Preloader /> */}
+      <div>
+        {hasSearched && searchResult.length > 0 ? (
+          <NewsCardList />
+        ) : hasSearched && searchResult.length === 0 ? (
+          <NotFound />
+        ) : props.isLoading ? (
+          <Preloader />
+        ) : props.searchError === true ? (
+          <p>
+            Sorry, something went wrong during the request. There may be a
+            connection issue or the server may be down. Please try again later.
           </p>
-        </div>
-      </section>
+        ) : (
+          ""
+        )}
+      </div>
     </main>
   );
 }

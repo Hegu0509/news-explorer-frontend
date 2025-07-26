@@ -1,129 +1,129 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Main from "./Main/Main";
-import api from "./../utils/api";
+import About from "./About/About";
+import { getSearchResult } from "./../utils/NewsApi";
 
-import { CurrentUserContext } from "./../contexts/CurrentUserContext";
+import { KeywordContext } from "../contexts/KeyWordContext";
+import { SearchResultContext } from "../contexts/SearchResultContext";
+import { HasSearchedContext } from "../contexts/HasSearchedContext";
+import { MobileContext } from "../contexts/MobileContext";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState([]);
-  const [popup, setPopup] = useState(null);
-  const [cards, setCards] = useState([]);
+  const [keyword, setkeyword] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [searchError, setSearchError] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((user) => {
-        // console.log(user);
-        setCurrentUser(user);
-      })
-      .catch(console.error);
-  }, []);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    api
-      .getInitialCards()
+  function handleSearch(keyword) {
+    setkeyword(keyword);
+    setIsSearching(true);
+    setIsLoading(true);
+    getSearchResult(keyword)
       .then((res) => {
         console.log(res);
-        let arr = [];
-        arr.push(res[0]);
-        arr.push(res[1]);
-        arr.push(res[2]);
-
-        setCards(arr);
-      })
-      .catch(console.error);
-  }, []);
-
-  function handleUpdateUser(user) {
-    api.updateUser(user).then((newUser) => {
-      setCurrentUser(newUser);
-      handleClosePopup();
-    });
-  }
-
-  function handleUpdateAvatar(avatar) {
-    api
-      .updateAvatar(avatar)
-      .then((updateUser) => {
-        setCurrentUser(updateUser);
-      })
-      .then(() => {
-        handleClosePopup();
+        setSearchResult(res.articles);
+        setHasSearched(true);
+        setIsSearching(false);
+        setSearchError(false);
       })
       .catch((err) => {
         console.log(err);
+        setIsSearching(false);
+        setSearchError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api
-      .changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) => {
-        setCards((state) =>
-          state.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
-          )
-        );
-      })
-      .catch((error) => console.error(error));
-  }
+  const handleAbout = () => {
+    navigate("/about");
+  };
 
-  function handleCardDelete(card) {
-    api.deleteCard(card._id).then(() => {
-      setCards((state) => state.filter((c) => c._id !== card._id));
-    });
-  }
+  const handleHome = () => {
+    navigate("/home");
+  };
 
-  function handleOpenPopup(popup) {
-    setPopup(popup);
-  }
+  useEffect(() => {
+    navigate("/home");
+  }, []);
 
-  function handleClosePopup() {
-    setPopup(null);
-  }
+  const openMobileMenu = () => {
+    setMobileMenuOpen(true);
+  };
 
-  function handleAddPlaceSubmit({ name, link }) {
-    api
-      .addCard({ name, link })
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
-      })
-      .then(() => {
-        handleClosePopup();
-      })
-      .catch((error) => {
-        console.log("Invalid", error);
-      });
-  }
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
 
   return (
     <>
-      <CurrentUserContext.Provider
-        value={{
-          currentUser,
-          popup,
-          cards,
-          handleUpdateUser,
-          handleUpdateAvatar,
-          handleCardLike,
-          handleCardDelete,
-          handleAddPlaceSubmit,
-        }}
-      >
-        <div className="page">
-          <Header />
-          <Main
-            onOpenPopup={handleOpenPopup}
-            onClosePopup={handleClosePopup}
-            popup={popup}
-          />
-          <Footer />
-          <script type="module" src="./index.js"></script>
-        </div>
-      </CurrentUserContext.Provider>
+      <HasSearchedContext.Provider value={{ hasSearched, setHasSearched }}>
+        <SearchResultContext.Provider value={{ searchResult, setSearchResult }}>
+          <KeywordContext.Provider value={{ keyword, setkeyword }}>
+            <MobileContext.Provider
+              value={{ mobileMenuOpen, openMobileMenu, closeMobileMenu }}
+            >
+              <div className="page">
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <>
+                        <Header
+                          handleSearch={handleSearch}
+                          handleAbout={handleAbout}
+                          handleHome={handleHome}
+                        />
+                        <Outlet />
+                        <Footer />
+                      </>
+                    }
+                  >
+                    <Route
+                      path="/home"
+                      element={
+                        <>
+                          <Main
+                            searchError={searchError}
+                            isLoading={isLoading}
+                            isSearching={isSearching}
+                          />
+                        </>
+                      }
+                    />
+
+                    {true && (
+                      <Route
+                        path="/about"
+                        element={
+                          <>
+                            <Main
+                              searchError={searchError}
+                              isLoading={isLoading}
+                              isSearching={isSearching}
+                            />
+                            <About />
+                          </>
+                        }
+                      />
+                    )}
+                  </Route>
+                </Routes>
+                <script type="module" src="./index.js"></script>
+              </div>
+            </MobileContext.Provider>
+          </KeywordContext.Provider>
+        </SearchResultContext.Provider>
+      </HasSearchedContext.Provider>
     </>
   );
 }

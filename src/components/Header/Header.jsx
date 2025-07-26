@@ -1,23 +1,36 @@
+import MobileMenu from "../MobileMenu/MobileMenu";
+import { useContext } from "react";
 import lineHeader from "../../images/line_header.png";
-import menuMobile from "../../images/icons/menu-mobile.png";
+import SearchForm from "../SearchForm/SearchForm";
+import { MobileContext } from "../../contexts/MobileContext";
 
-export default function Header() {
+export default function Header({ handleSearch, handleAbout, handleHome }) {
+  const { mobileMenuOpen, openMobileMenu, closeMobileMenu } =
+    useContext(MobileContext);
+
+  const handleMobileMenu = () => {
+    if (mobileMenuOpen) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  };
   return (
     <div className="layout">
       <header className="header">
         <div className="header__wrapper">
-          <div className="header__logo">NewsExplorer</div>
+          <a className="header__logo" onClick={handleHome}>
+            NewsExplorer
+          </a>
           <div className="header__login">
-            <p className="header__login-inicio">Inicio</p>
-            <button className="header__login-iniciar">
-              <div className="header__logout-button">Iniciar sesión</div>
+            <a className="header__login-inicio" onClick={handleHome}>
+              Inicio
+            </a>
+            <button className="header__login-iniciar" onClick={handleAbout}>
+              <div className="header__logout-button">Acerca de</div>
             </button>
           </div>
-          <img
-            src={menuMobile}
-            alt="Mobile menu"
-            className="header__menu-mobile"
-          />
+          <button className="header__menu-mobile" onClick={handleMobileMenu} />
         </div>
 
         <img
@@ -25,24 +38,16 @@ export default function Header() {
           alt="Linea para el encabezado"
           className="header__line"
         />
-      </header>
-      <div className="search">
-        <p className="search__title">¿Qué está pasando en el mundo?</p>
-        <p className="search__subtitle">
-          Encuentra las últimas noticias sobre cualquier tema y guárdalas en tu
-          cuenta personal
-        </p>
-        <div className="search__wrapper">
-          <input
-            type="text"
-            id="txtSearch"
-            name="txtSearch"
-            placeholder="Introduce un tema"
-            className="search__text"
+
+        {mobileMenuOpen && (
+          <MobileMenu
+            closeMobileMenu={closeMobileMenu}
+            handleAbout={handleAbout}
           />
-          <button className="search__button">Buscar</button>
-        </div>
-      </div>
+        )}
+
+        <SearchForm handleSearch={handleSearch} />
+      </header>
     </div>
   );
 }

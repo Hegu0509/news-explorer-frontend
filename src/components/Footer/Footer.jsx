@@ -1,5 +1,5 @@
-import gitHubIcon from "../../images/icons/github.png";
-import facebookIcon from "../../images/icons/fb.png";
+import gitHubIcon from "../../images/icons/github.svg";
+import facebookIcon from "../../images/icons/fb.svg";
 export default function Footer() {
   return (
     <footer className="footer">
@@ -8,18 +8,26 @@ export default function Footer() {
       </p>
       <div className="footer__wrapper">
         <div className="footer_links">
-          <a className="footer__link">Inicio</a>
-          <a className="footer__link">Tripleten</a>
+          <a className="footer__link" href="#">
+            Inicio
+          </a>
+          <a
+            href="https://tripleten.com/"
+            target="_blank"
+            className="footer__link"
+          >
+            Tripleten
+          </a>
         </div>
         <div className="footer__items">
-          <a href="https://github.com/">
+          <a href="https://github.com/" target="_blank">
             <img
               src={gitHubIcon}
               alt="github icon"
               className="footer__social-icon"
             />
           </a>
-          <a href="https://www.facebook.com/">
+          <a href="https://www.facebook.com/" target="_blank">
             <img
               src={facebookIcon}
               alt="github icon"
